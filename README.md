@@ -8,7 +8,7 @@ The self-contained application is in [`vetcred/`](vetcred/). This repository was
 
 - **Run locally:** follow the [quick start](vetcred/README.md#quick-start).
 - **Replit:** import this GitHub repository, select a Node.js environment, and press Run. The root `.replit` configuration opens the Vite app on port 5173. If automatic setup is unavailable, use the two commands in the quick start from a Replit Shell and run the dev server with `--host 0.0.0.0`. Replit hosting has not been provisioned by this repository.
-- **GitHub Pages:** a build/test/deploy workflow is included. A repository owner must enable **Settings → Pages → Build and deployment → GitHub Actions** before deployment succeeds. Once deployed, the expected address is `https://jlu27-nd.github.io/gen-ai/`. Treat this address as unverified until a successful Pages deployment.
+- **Live prototype:** [Open VetCred](https://jlu27-nd.github.io/gen-ai/). GitHub Pages serves the application from this repository's tested production build.
 
 ## First working slice
 
