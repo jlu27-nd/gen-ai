@@ -1,0 +1,18 @@
+SYNTHETIC DEMO — NOT AN OFFICIAL TRANSCRIPT
+JOINT SERVICES TRANSCRIPT (JST)
+
+Course ID: SYN-UNKNOWN-900
+Course Title: Advanced Field Operations
+Completion Date: 2025-02-04
+Status: Completed
+Semester Credits: 3
+Level: upper
+Learning Outcomes: Coordinate teams and logistics during field exercises.
+
+Course ID: SYN-JST-NET-101
+Course Title: Network Operations Fundamentals
+Completion Date: 2025-01-01
+Status: In progress
+Semester Credits: 3
+Level: lower
+Learning Outcomes: Networking, TCP and routing.

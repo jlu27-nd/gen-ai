@@ -1,0 +1,18 @@
+SYNTHETIC DEMO — NOT AN OFFICIAL TRANSCRIPT
+JOINT SERVICES TRANSCRIPT (JST)
+
+Course ID: SYN-JST-NET-101
+Course Title: Network Operations Fundamentals
+Completion Date: 2025-05-16
+Status: Completed
+Semester Credits: 3
+Level: lower
+Learning Outcomes: Explain networking and TCP layers; configure routing; troubleshoot network faults.
+
+Course ID: SYN-JST-LEAD-201
+Course Title: Team Leadership
+Completion Date: 2025-08-20
+Status: Completed
+Semester Credits: 3
+Level: lower
+Learning Outcomes: Apply leadership methods; guide teams; plan communication.

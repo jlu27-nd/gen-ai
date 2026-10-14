@@ -1,0 +1,64 @@
+import {chromium} from 'playwright';
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {spawn} from 'node:child_process';
+const server=spawn(process.execPath,['node_modules/vite/bin/vite.js','preview','--host','127.0.0.1','--port','4175','--strictPort'],{stdio:'ignore'});
+let browser;
+try {
+ let ready=false;
+ for(let i=0;i<50;i++){try{if((await fetch('http://127.0.0.1:4175/')).ok){ready=true;break;}}catch{}await new Promise(r=>setTimeout(r,100));}
+ if(!ready)throw new Error('Build first with pnpm build; preview did not start.');
+ browser=await chromium.launch({headless:true,...(process.env.BROWSER_CHANNEL?{channel:process.env.BROWSER_CHANNEL}:{})});
+const page=await browser.newPage({viewport:{width:1365,height:1000}});
+const errors=[];page.on('pageerror',e=>errors.push(e.message));
+await page.goto('http://127.0.0.1:4175/');
+await page.getByRole('button',{name:'Try JST example',exact:true}).click();
+await page.locator('[data-key="verified"]').first().check();
+await page.locator('[data-key="verified"]').nth(1).check();
+await page.getByRole('button',{name:'Compare learning & build recommendations'}).click();
+assert.match(await page.locator('#results').innerText(),/CS220/);
+assert.equal(await page.locator('.metrics strong').nth(1).innerText(),'6');
+for(let i=0;i<3;i++) {
+ await page.locator('[data-review="0"] textarea').fill('Confirmed synthetic course evidence and policy.');
+ await page.locator('[data-review="0"] button').click();
+}
+assert.match(await page.locator('.recommendation').first().innerText(),/review-complete/);
+const downloadEvent=page.waitForEvent('download');
+await page.getByRole('button',{name:'Export review packet (JSON)'}).click();
+const download=await downloadEvent;
+const packet=JSON.parse(await readFile(await download.path(),'utf8'));
+assert.equal(packet.recommendations[0].history.length,3);
+await page.getByRole('button',{name:'Try ambiguous example'}).click();
+await page.locator('[data-key="verified"]').first().check();
+await page.locator('[data-key="verified"]').nth(1).check();
+await page.getByRole('button',{name:'Compare learning & build recommendations'}).click();
+assert.equal(await page.locator('.metrics strong').nth(1).innerText(),'0');
+await page.locator('[data-review="0"] textarea').fill('Need more evidence.');
+await page.locator('[data-review="0"] button').click();
+assert.match(await page.locator('.form-message').first().innerText(),/Resolve evidence gaps/);
+await page.locator('[data-review="0"] select[name="action"]').selectOption('request-evidence');
+await page.locator('[data-review="0"] button').click();
+assert.match(await page.locator('.recommendation').first().innerText(),/needs-evidence/);
+await page.getByRole('button',{name:'Clear session'}).click();
+await page.getByRole('button',{name:'Extract learning'}).click();
+assert.match(await page.locator('#message').innerText(),/Add a JST or CCAF/);
+await page.locator('#file').setInputFiles({name:'bad.docx',mimeType:'application/octet-stream',buffer:Buffer.from('unsupported')});
+await page.waitForFunction(()=>document.querySelector('#message').textContent.includes('Unsupported file'));
+await page.getByRole('button',{name:'Try CCAF example'}).click();
+await page.waitForFunction(()=>document.querySelector('#message').textContent.includes('2 CCAF learning records'));
+assert.equal(await page.locator('[data-record]').count(),2);
+await page.getByRole('button',{name:'Clear session'}).click();
+const pdfPage=await browser.newPage();
+const synthetic=await readFile(new URL('../public/samples/jst.txt',import.meta.url),'utf8');
+await pdfPage.setContent('<pre style="font-size:12px">'+synthetic+'</pre>');
+const pdf=await pdfPage.pdf({format:'A4'});
+await pdfPage.close();
+await page.locator('#file').setInputFiles({name:'synthetic-jst.pdf',mimeType:'application/pdf',buffer:pdf});
+await page.waitForFunction(()=>document.querySelector('#message').textContent.includes('2 JST learning records'));
+assert.match(await page.locator('#message').innerText(),/2 JST learning records/);
+await page.getByRole('button',{name:'Clear session'}).click();
+await page.setViewportSize({width:390,height:844});
+assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),true);
+assert.deepEqual(errors,[]);
+console.log('PASS: typical JST → verify → three review stages → JSON export; challenge → blocked advance → evidence request; empty and unsupported input; CCAF; PDF upload and extraction; mobile width; zero browser exceptions.');
+} finally {await browser?.close();server.kill();}

@@ -1,0 +1,18 @@
+SYNTHETIC DEMO — NOT AN OFFICIAL TRANSCRIPT
+COMMUNITY COLLEGE OF THE AIR FORCE (CCAF)
+
+Course ID: SYN-CCAF-LOG-101
+Course Title: Logistics Fundamentals
+Completion Date: 2025-04-03
+Status: Completed
+Semester Credits: 3
+Level: lower
+Learning Outcomes: Plan logistics and inventory processes; explain supply relationships.
+
+Course ID: SYN-CCAF-COMP-101
+Course Title: Computer Systems
+Completion Date: 2025-07-10
+Status: Completed
+Semester Credits: 3
+Level: lower
+Learning Outcomes: Explain computing hardware and software.
